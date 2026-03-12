@@ -5,20 +5,7 @@ import Navbar from './components/Navbar.vue'
 const route = useRoute()
 
 // Check if current route should show SCADA navbar instead of regular navbar
-const isSCADARoute = (path) =>
-  path === '/' ||
-  path === '/scada' ||
-  path === '/scada-live' ||
-  path === '/scada-today' ||
-  path === '/scada-periodic' ||
-  path === '/scada-oee' ||
-  path === '/scada-kpi' ||
-  path === '/scada-failure' ||
-  path === '/reports' ||
-  path === '/quality' ||
-  path === '/inventory' ||
-  path === '/maintenance' ||
-  path === '/kpi'
+const isSCADARoute = (path) => path === '/' || path === '/scada' || path.startsWith('/scada-')
 </script>
 
 <template>

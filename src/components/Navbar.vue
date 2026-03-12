@@ -4,67 +4,57 @@ import { computed } from 'vue'
 
 const route = useRoute()
 const isActive = (path) => computed(() => route.path === path)
+
+const livePages = [
+  { path: '/scada-live', icon: 'monitoring', label: 'Overview' },
+  { path: '/scada-today', icon: 'today', label: 'Hari Ini' },
+  { path: '/scada-periodic', icon: 'calendar_month', label: 'Periodik' },
+  { path: '/scada-oee', icon: 'precision_manufacturing', label: 'OEE Equipment' },
+  { path: '/scada-kpi', icon: 'inventory', label: 'KPI Produk' },
+  { path: '/scada-failure', icon: 'report', label: 'Kegagalan' },
+]
 </script>
 
 <template>
-  <nav class="bg-white shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <div class="flex items-center gap-6">
-          <div class="flex-shrink-0 flex items-center gap-2">
-            <span class="material-symbols-outlined text-3xl text-purple-600">dashboard</span>
-            <span class="text-xl font-bold text-gray-800 font-poppins">PM Dashboard</span>
+  <nav
+    class="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700 shadow-lg sticky top-0 z-50"
+  >
+    <div class="px-6">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-lg">
+            <span class="material-symbols-outlined text-white text-2xl">build</span>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-white font-poppins">SCADA Dashboard</h1>
+            <p class="text-xs text-gray-400">Pengolahan Pakan Ternak</p>
           </div>
         </div>
-        <div class="hidden sm:flex sm:items-center sm:space-x-4">
+
+        <div class="hidden sm:flex sm:items-center sm:space-x-1">
           <RouterLink
-            to="/"
+            v-for="pg in livePages"
+            :key="pg.path"
+            :to="pg.path"
             :class="[
-              isActive('/').value
-                ? 'border-purple-500 text-gray-900'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-              'inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium transition-colors font-poppins',
+              isActive(pg.path).value
+                ? 'border-cyan-500 text-cyan-400'
+                : 'border-transparent text-gray-400 hover:text-gray-200',
+              'inline-flex items-center gap-1 px-3 py-2 border-b-2 text-sm font-medium transition-colors font-poppins',
             ]"
           >
-            <span class="material-symbols-outlined text-sm mr-1">home</span>
-            Dashboard
+            <span class="material-symbols-outlined text-sm">{{ pg.icon }}</span>
+            {{ pg.label }}
           </RouterLink>
-          <RouterLink
-            to="/scada"
-            :class="[
-              isActive('/scada').value
-                ? 'border-purple-500 text-gray-900'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-              'inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium transition-colors font-poppins',
-            ]"
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span
+            class="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 border border-green-500/50 rounded-full"
           >
-            <span class="material-symbols-outlined text-sm mr-1">build</span>
-            SCADA
-          </RouterLink>
-          <RouterLink
-            to="/reports"
-            :class="[
-              isActive('/reports').value
-                ? 'border-purple-500 text-gray-900'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-              'inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium transition-colors font-poppins',
-            ]"
-          >
-            <span class="material-symbols-outlined text-sm mr-1">assessment</span>
-            Laporan
-          </RouterLink>
-          <RouterLink
-            to="/hr"
-            :class="[
-              isActive('/hr').value
-                ? 'border-purple-500 text-gray-900'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-              'inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium transition-colors font-poppins',
-            ]"
-          >
-            <span class="material-symbols-outlined text-sm mr-1">groups</span>
-            Human Resources
-          </RouterLink>
+            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            <span class="text-xs text-green-300 font-semibold">ONLINE</span>
+          </span>
         </div>
       </div>
     </div>

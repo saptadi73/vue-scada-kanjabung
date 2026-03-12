@@ -6,12 +6,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/SCADADashboardView.vue'),
+      component: () => import('../views/SCADALiveReportView.vue'),
     },
     {
       path: '/scada',
       name: 'scada',
-      component: () => import('../views/SCADADashboardView.vue'),
+      redirect: '/scada-live',
     },
     {
       path: '/scada-live',
@@ -44,34 +44,8 @@ const router = createRouter({
       component: () => import('../views/SCADAFailureReportView.vue'),
     },
     {
-      path: '/reports',
-      name: 'reports',
-      component: () => import('../views/ProductionReportView.vue'),
-    },
-    {
-      path: '/quality',
-      name: 'quality',
-      component: () => import('../views/QualityReportView.vue'),
-    },
-    {
-      path: '/inventory',
-      name: 'inventory',
-      component: () => import('../views/InventoryDashboardView.vue'),
-    },
-    {
-      path: '/maintenance',
-      name: 'maintenance',
-      component: () => import('../views/MaintenanceDashboardView.vue'),
-    },
-    {
-      path: '/kpi',
-      name: 'kpi',
-      component: () => import('../views/RTKPIDashboardView.vue'),
-    },
-    {
-      path: '/hr',
-      name: 'hr',
-      component: () => import('../views/HumanResourcesView.vue'),
+      path: '/:pathMatch(.*)*',
+      redirect: '/scada-live',
     },
   ],
 })
