@@ -9,6 +9,11 @@ const isSCADARoute = (path) =>
   path === '/' ||
   path === '/scada' ||
   path === '/scada-live' ||
+  path === '/scada-today' ||
+  path === '/scada-periodic' ||
+  path === '/scada-oee' ||
+  path === '/scada-kpi' ||
+  path === '/scada-failure' ||
   path === '/reports' ||
   path === '/quality' ||
   path === '/inventory' ||

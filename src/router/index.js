@@ -19,6 +19,31 @@ const router = createRouter({
       component: () => import('../views/SCADALiveReportView.vue'),
     },
     {
+      path: '/scada-today',
+      name: 'scada-today',
+      component: () => import('../views/SCADADashboardTodayView.vue'),
+    },
+    {
+      path: '/scada-periodic',
+      name: 'scada-periodic',
+      component: () => import('../views/SCADAPeriodicReportView.vue'),
+    },
+    {
+      path: '/scada-oee',
+      name: 'scada-oee',
+      component: () => import('../views/SCADAOEEEquipmentView.vue'),
+    },
+    {
+      path: '/scada-kpi',
+      name: 'scada-kpi',
+      component: () => import('../views/SCADAKPIProductView.vue'),
+    },
+    {
+      path: '/scada-failure',
+      name: 'scada-failure',
+      component: () => import('../views/SCADAFailureReportView.vue'),
+    },
+    {
       path: '/reports',
       name: 'reports',
       component: () => import('../views/ProductionReportView.vue'),
