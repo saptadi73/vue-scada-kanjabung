@@ -93,10 +93,7 @@
               <span class="material-symbols-outlined text-cyan-400">precision_manufacturing</span>
               OEE Quality per Equipment
             </h2>
-            <div
-              v-if="!byEquipmentSeries[0].data.length"
-              class="py-10 text-center text-gray-500 text-sm"
-            >
+            <div v-if="!byEquipmentRows.length" class="py-10 text-center text-gray-500 text-sm">
               Belum ada data OEE hari ini
             </div>
             <apexchart
@@ -123,7 +120,8 @@
                   <th class="px-3 py-2 text-right">Records</th>
                   <th class="px-3 py-2 text-right">Yield %</th>
                   <th class="px-3 py-2 text-right">Consumption Ratio</th>
-                  <th class="px-3 py-2 text-right">Qty Finished</th>
+                  <th class="px-3 py-2 text-right">Avg Silo OEE %</th>
+                  <th class="px-3 py-2 text-right">Avg Deviation %</th>
                   <th class="px-3 py-2 text-right">Deviation Alerts</th>
                 </tr>
               </thead>
@@ -154,16 +152,30 @@
                   <td class="px-3 py-2 text-right text-gray-300">
                     {{ fmtDec(eq.avg_consumption_ratio) }}
                   </td>
-                  <td class="px-3 py-2 text-right text-gray-300">{{ fmtDec(eq.qty_finished) }}</td>
+                  <td class="px-3 py-2 text-right text-gray-300">
+                    {{ fmtDec(eq.avg_oee_silo_percent) }}%
+                  </td>
                   <td
                     class="px-3 py-2 text-right"
-                    :class="eq.deviation_alerts > 0 ? 'text-red-400' : 'text-green-400'"
+                    :class="
+                      eq.avg_max_abs_deviation_percent > 10
+                        ? 'text-red-400'
+                        : eq.avg_max_abs_deviation_percent > 5
+                          ? 'text-yellow-400'
+                          : 'text-green-400'
+                    "
                   >
-                    {{ fmt(eq.deviation_alerts) }}
+                    {{ fmtDec(eq.avg_max_abs_deviation_percent) }}%
+                  </td>
+                  <td
+                    class="px-3 py-2 text-right"
+                    :class="eq.total_deviation_alerts > 0 ? 'text-red-400' : 'text-green-400'"
+                  >
+                    {{ fmt(eq.total_deviation_alerts) }}
                   </td>
                 </tr>
                 <tr v-if="!byEquipmentRows.length">
-                  <td colspan="6" class="px-3 py-8 text-center text-gray-500">
+                  <td colspan="7" class="px-3 py-8 text-center text-gray-500">
                     Belum ada data hari ini
                   </td>
                 </tr>
@@ -258,7 +270,7 @@ const deviationChartOpts = computed(() => ({
     categories: deviationRows.value.map((d, i) => d.batch || d.mo_id || d.name || `#${i + 1}`),
     labels: { style: { colors: '#cbd5e1' } },
   },
-  yaxis: { labels: { style: { colors: '#cbd5e1' } } },
+  yaxis: { labels: { style: { colors: '#cbd5e1' } }, max: undefined },
   dataLabels: { enabled: false },
   tooltip: { theme: 'dark' },
   annotations: { yaxis: [{ y: 0, borderColor: '#64748b', strokeDashArray: 4 }] },
@@ -267,22 +279,40 @@ const deviationSeries = computed(() => [
   {
     name: 'Deviation %',
     data: deviationRows.value.map(
-      (d) => Number(d.deviation_percent ?? d.deviation ?? d.yield_deviation) || 0,
+      (d) =>
+        Number(
+          d.max_abs_deviation_percent ?? d.deviation_percent ?? d.deviation ?? d.yield_deviation,
+        ) || 0,
     ),
   },
 ])
 
 const byEquipmentRows = computed(() => r.value?.oee_quality_today?.by_equipment || [])
 const byEquipmentChartOpts = computed(() => ({
-  chart: { toolbar: { show: false }, background: 'transparent' },
-  plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
-  colors: ['#06b6d4'],
+  chart: {
+    type: 'bar',
+    toolbar: { show: false },
+    background: 'transparent',
+  },
+  plotOptions: {
+    bar: {
+      horizontal: true,
+      borderRadius: 4,
+      barHeight: '55%',
+    },
+  },
+  colors: ['#06b6d4', '#a855f7', '#f97316'],
   grid: { borderColor: '#475569', strokeDashArray: 3 },
-  xaxis: { labels: { style: { colors: '#cbd5e1' } } },
-  yaxis: {
-    categories: byEquipmentRows.value.map((e) => e.equipment_name || e.equipment || '-'),
+  xaxis: {
+    categories: byEquipmentRows.value.map((e) => e.equipment_name || '-'),
     labels: { style: { colors: '#cbd5e1' } },
   },
+  yaxis: {
+    labels: {
+      style: { colors: '#cbd5e1', fontSize: '11px' },
+    },
+  },
+  legend: { labels: { colors: '#cbd5e1' } },
   dataLabels: { enabled: false },
   tooltip: { theme: 'dark' },
 }))
@@ -290,6 +320,14 @@ const byEquipmentSeries = computed(() => [
   {
     name: 'Yield %',
     data: byEquipmentRows.value.map((e) => Number(e.avg_yield_percent) || 0),
+  },
+  {
+    name: 'Avg Silo OEE %',
+    data: byEquipmentRows.value.map((e) => Number(e.avg_oee_silo_percent) || 0),
+  },
+  {
+    name: 'Avg Deviation %',
+    data: byEquipmentRows.value.map((e) => Number(e.avg_max_abs_deviation_percent) || 0),
   },
 ])
 

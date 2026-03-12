@@ -228,7 +228,12 @@ const deviationCategories = computed(() =>
 )
 const deviationValues = computed(() =>
   deviationRows.value.map((item) =>
-    toNumber(item.deviation_percent ?? item.deviation ?? item.yield_deviation),
+    toNumber(
+      item.max_abs_deviation_percent ??
+        item.deviation_percent ??
+        item.deviation ??
+        item.yield_deviation,
+    ),
   ),
 )
 
@@ -271,6 +276,7 @@ const deviationChartOptions = computed(() => ({
   },
   yaxis: {
     labels: { style: { colors: '#cbd5e1' } },
+    max: undefined,
   },
   dataLabels: { enabled: false },
   tooltip: { theme: 'dark' },
